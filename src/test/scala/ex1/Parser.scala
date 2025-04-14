@@ -1,8 +1,6 @@
 package ex1
 
 import ex1.*
-import org.junit.Assert.*
-import org.junit.Test
 import org.scalatest.matchers.should.Matchers.*
 
 
