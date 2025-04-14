@@ -57,14 +57,14 @@ class RobotWithBattery(val robot: Robot, val BatteryTurn: Int = 5, val BatteryAc
   def batteryLevel: Int = battery
 
   override def act(): Unit =
-    if battery - BatteryConsumptionAct > 0
-    then 
+    if battery - BatteryConsumptionAct >= 0
+    then
       battery = battery - BatteryConsumptionAct
       robot.act()
 
   override def turn(dir: Direction): Unit =
-    if battery - BatteryConsumptionTurn > 0
-    then 
+    if battery - BatteryConsumptionTurn >= 0
+    then
       battery = battery - BatteryConsumptionTurn
       robot.turn(dir)
 

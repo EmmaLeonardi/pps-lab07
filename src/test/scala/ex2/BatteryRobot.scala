@@ -3,6 +3,8 @@ package ex2
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+import scala.language.postfixOps
+
 class BatteryRobot extends AnyFlatSpec with Matchers:
   var consumptionAction = 1
 
@@ -73,8 +75,38 @@ class BatteryRobot extends AnyFlatSpec with Matchers:
     robot.turn(Direction.West)
     robot.act()
     robot.act()
+
     robot.batteryLevel should not be originalBattery
     originalBattery = robot.batteryLevel
     robot.recharge()
     robot.batteryLevel should not be originalBattery
     robot.batteryLevel should be(100)
+
+  it should "stop when battery is 0" in:
+    val massiveConsumptionActionTurn=25
+    val massiveConsumptionActionAct=50
+    val robot = new RobotWithBattery(
+      SimpleRobot((0, 0), Direction.North),
+      massiveConsumptionActionTurn,
+      massiveConsumptionActionAct
+    )
+
+    robot.act()
+    val firstPosition=robot.position
+    robot.act()
+    val lastPosition=robot.position
+    lastPosition should not be firstPosition
+    robot.act()
+    robot.position should be(lastPosition)
+    robot.batteryLevel should be (0)
+
+    robot.recharge()
+
+    robot.turn(Direction.South)
+    robot.turn(Direction.West)
+    robot.turn(Direction.East)
+    robot.turn(Direction.North)
+    robot.batteryLevel should be (0)
+    robot.turn(Direction.South)
+    robot.direction should be (Direction.North)
+
