@@ -70,6 +70,14 @@ class RobotWithBattery(val robot: Robot, val BatteryTurn: Int = 5, val BatteryAc
 
   override def toString: String = s"${robot.toString} with battery level: ${battery}"
 
+class RobotCanFail(val robot: Robot, val failureProbability: Int = 50) extends Robot:
+  export robot.{position, direction, turn}
+  override def act(): Unit = ???
+
+class RobotRepeated(val robot: Robot, val numberOfRepetitions: Int = 2) extends Robot:
+    export robot.{position, direction, turn}
+    override def act(): Unit = ???
+
 @main def testRobot(): Unit =
   val robot = LoggingRobot(SimpleRobot((0, 0), Direction.North))
   robot.act() // robot at (0, 1) facing North
