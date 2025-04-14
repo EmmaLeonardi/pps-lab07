@@ -1,5 +1,6 @@
 package ex2
 
+import ex2.Direction.{North, South, West}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -110,3 +111,21 @@ class BatteryRobot extends AnyFlatSpec with Matchers:
     robot.turn(Direction.South)
     robot.direction should be (Direction.North)
 
+  it should "stop when action could cause battery to go below 0" in :
+    val consumption = 99
+    val robot = new RobotWithBattery(
+      SimpleRobot((0, 0), Direction.North),
+      consumption,
+      consumption
+    )
+
+    robot.act()
+    robot.batteryLevel should be (1)
+    robot.act()
+    robot.batteryLevel should be (1)
+
+    robot.recharge()
+    robot.turn(Direction.South)
+    robot.batteryLevel should be (1)
+    robot.turn(Direction.North)
+    robot.batteryLevel should be (1)
