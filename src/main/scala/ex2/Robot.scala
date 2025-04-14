@@ -1,5 +1,9 @@
 package ex2
 
+import ex2.Direction.North
+
+import scala.language.postfixOps
+
 type Position = (Int, Int)
 enum Direction:
   case North, East, South, West
@@ -42,9 +46,43 @@ class LoggingRobot(val robot: Robot) extends Robot:
     robot.act()
     println(robot.toString)
 
+class RobotWithBattery(val robot: Robot, val BatteryTurn: Int = 5, val BatteryAct: Int = 10) extends Robot:
+  export robot.{position, direction}
+  private var battery = 100
+  private val BatteryConsumptionTurn = BatteryTurn
+  private val BatteryConsumptionAct = BatteryAct
+
+  def recharge(): Unit = battery = 100
+
+  def batteryLevel: Int = battery
+
+  override def act(): Unit =
+    if battery - BatteryConsumptionAct > 0
+    then 
+      battery = battery - BatteryConsumptionAct
+      robot.act()
+
+  override def turn(dir: Direction): Unit =
+    if battery - BatteryConsumptionTurn > 0
+    then 
+      battery = battery - BatteryConsumptionTurn
+      robot.turn(dir)
+
+  override def toString: String = s"${robot.toString} with battery level: ${battery}"
+
 @main def testRobot(): Unit =
   val robot = LoggingRobot(SimpleRobot((0, 0), Direction.North))
   robot.act() // robot at (0, 1) facing North
   robot.turn(robot.direction.turnRight) // robot at (0, 1) facing East
   robot.act() // robot at (1, 1) facing East
   robot.act() // robot at (2, 1) facing East
+
+  val batteryRobot = RobotWithBattery(SimpleRobot((0, 0), North))
+  println(batteryRobot)
+  batteryRobot.act()
+  println(batteryRobot)
+  batteryRobot.turn(robot.direction.turnRight)
+  println(batteryRobot)
+  batteryRobot.recharge()
+  println(batteryRobot)
+
