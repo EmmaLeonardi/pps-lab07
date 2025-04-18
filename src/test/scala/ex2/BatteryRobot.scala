@@ -129,3 +129,14 @@ class BatteryRobot extends AnyFlatSpec with Matchers:
     robot.batteryLevel should be (1)
     robot.turn(Direction.North)
     robot.batteryLevel should be (1)
+
+  it should "require positive battery consumption in actions" in :
+    a[IllegalArgumentException] should be thrownBy new RobotWithBattery(
+      SimpleRobot((0, 0), Direction.North),
+      -1,
+      1
+    )
+    a[IllegalArgumentException] should be thrownBy new RobotWithBattery(
+      SimpleRobot((0, 0), Direction.North),
+      -1
+    )

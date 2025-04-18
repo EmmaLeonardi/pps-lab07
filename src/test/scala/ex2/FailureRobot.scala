@@ -7,11 +7,11 @@ import org.scalatest.matchers.should.Matchers
 import scala.language.postfixOps
 
 class FailureRobot extends AnyFlatSpec with Matchers:
-  val failureChance = 0
+  val alwaysSucceed = 0
   val alwaysFail = 100
 
   "A CanFailRobot" should "turn correctly" in:
-    val robot = new RobotCanFail(SimpleRobot((0, 0), Direction.North), 0)
+    val robot = new RobotCanFail(SimpleRobot((0, 0), Direction.North), alwaysSucceed)
     robot.turn(Direction.East)
     robot.direction should be(Direction.East)
 
@@ -39,7 +39,7 @@ class FailureRobot extends AnyFlatSpec with Matchers:
     robot.direction should be(Direction.North)
 
   it should "act correctly" in:
-    val robot = new RobotCanFail(SimpleRobot((0, 0), Direction.North), 0)
+    val robot = new RobotCanFail(SimpleRobot((0, 0), Direction.North), alwaysSucceed)
     robot.act()
     robot.position should be((0, 1))
 
@@ -71,3 +71,13 @@ class FailureRobot extends AnyFlatSpec with Matchers:
     robot.turn(Direction.West)
     robot.act()
     robot.position should be((0, 0))
+
+  it should "require a failure chance between 0 and 100" in :
+    a[IllegalArgumentException] should be thrownBy new RobotCanFail(
+      SimpleRobot((0, 0), Direction.North),
+      101
+    )
+    a[IllegalArgumentException] should be thrownBy new RobotCanFail(
+      SimpleRobot((0, 0), Direction.North),
+      -1
+    )

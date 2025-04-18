@@ -47,26 +47,26 @@ class LoggingRobot(val robot: Robot) extends Robot:
     robot.act()
     println(robot.toString)
 
-class RobotWithBattery(val robot: Robot, val BatteryTurn: Int = 5, val BatteryAct: Int = 10) extends Robot:
+class RobotWithBattery(val robot: Robot, val batteryTurn: Int = 5, val batteryAct: Int = 10) extends Robot:
   export robot.{position, direction}
   private var battery = 100
-  private val BatteryConsumptionTurn = BatteryTurn
-  private val BatteryConsumptionAct = BatteryAct
+  require(batteryTurn>=0)
+  require(batteryAct>=0)
 
   def recharge(): Unit = battery = 100
 
   def batteryLevel: Int = battery
 
   override def act(): Unit =
-    if battery - BatteryConsumptionAct >= 0
+    if battery - batteryAct >= 0
     then
-      battery = battery - BatteryConsumptionAct
+      battery = battery - batteryAct
       robot.act()
 
   override def turn(dir: Direction): Unit =
-    if battery - BatteryConsumptionTurn >= 0
+    if battery - batteryTurn >= 0
     then
-      battery = battery - BatteryConsumptionTurn
+      battery = battery - batteryTurn
       robot.turn(dir)
 
   override def toString: String = s"${robot.toString} with battery level: ${battery}"
@@ -74,6 +74,7 @@ class RobotWithBattery(val robot: Robot, val BatteryTurn: Int = 5, val BatteryAc
 class RobotCanFail(val robot: Robot, val failureProbability: Int = 50) extends Robot:
   export robot.{position, direction}
   private val random = Random()
+  require(failureProbability>=0&&failureProbability<=100)
 
   override def act(): Unit =
     if random.nextInt(100) > failureProbability
@@ -87,6 +88,7 @@ class RobotCanFail(val robot: Robot, val failureProbability: Int = 50) extends R
 
 class RobotRepeated(val robot: Robot, val numberOfRepetitions: Int = 2) extends Robot:
     export robot.{position, direction}
+    require(numberOfRepetitions>=1)
     override def act(): Unit =
       for (i<- 1 to numberOfRepetitions) robot.act()
 

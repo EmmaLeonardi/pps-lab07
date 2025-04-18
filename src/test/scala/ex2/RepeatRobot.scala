@@ -4,8 +4,10 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class RepeatRobot extends AnyFlatSpec with Matchers:
+
+  val repetitions = 2
   "A Repeated robot" should "turn correctly" in:
-    val robot = new RobotRepeated(SimpleRobot((0, 0), Direction.North), 2)
+    val robot = new RobotRepeated(SimpleRobot((0, 0), Direction.North), repetitions)
 
     robot.turn(Direction.East)
     robot.direction should be(Direction.East)
@@ -20,7 +22,7 @@ class RepeatRobot extends AnyFlatSpec with Matchers:
     robot.direction should be(Direction.North)
 
   it should "act correctly" in:
-    val robot = new RobotRepeated(SimpleRobot((0, 0), Direction.North), 2)
+    val robot = new RobotRepeated(SimpleRobot((0, 0), Direction.North), repetitions)
 
     robot.act()
     robot.position should be((0, 2))
@@ -36,3 +38,9 @@ class RepeatRobot extends AnyFlatSpec with Matchers:
     robot.turn(Direction.West)
     robot.act()
     robot.position should be((0, 0))
+
+  it should "repeat an action more than 1 time" in :
+    a[IllegalArgumentException] should be thrownBy new RobotRepeated(
+      SimpleRobot((0, 0), Direction.North),
+      0
+    )
