@@ -86,8 +86,14 @@ class RobotCanFail(val robot: Robot, val failureProbability: Int = 50) extends R
   override def toString: String = s"${robot.toString} with chance to fail: ${failureProbability}%"
 
 class RobotRepeated(val robot: Robot, val numberOfRepetitions: Int = 2) extends Robot:
-    export robot.{position, direction, turn}
-    override def act(): Unit = ???
+    export robot.{position, direction}
+    override def act(): Unit =
+      for (i<- 1 to numberOfRepetitions) robot.act()
+
+    override def turn(dir: Direction): Unit =
+      for (i<- 1 to numberOfRepetitions) robot.turn(dir)
+
+    override def toString: String = s"${robot.toString} with ${numberOfRepetitions} repetions"
 
 @main def testRobot(): Unit =
   val robot = LoggingRobot(SimpleRobot((0, 0), Direction.North))
@@ -107,4 +113,7 @@ class RobotRepeated(val robot: Robot, val numberOfRepetitions: Int = 2) extends 
 
   val failRobot = RobotCanFail(SimpleRobot((0,0), North), 50)
   println(failRobot)
+
+  val repeatedRobot = RobotRepeated(SimpleRobot((0,0), North), 2)
+  println(repeatedRobot)
 
