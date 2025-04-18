@@ -3,6 +3,7 @@ package ex2
 import ex2.Direction.North
 
 import scala.language.postfixOps
+import scala.util.Random
 
 type Position = (Int, Int)
 enum Direction:
@@ -71,8 +72,18 @@ class RobotWithBattery(val robot: Robot, val BatteryTurn: Int = 5, val BatteryAc
   override def toString: String = s"${robot.toString} with battery level: ${battery}"
 
 class RobotCanFail(val robot: Robot, val failureProbability: Int = 50) extends Robot:
-  export robot.{position, direction, turn}
-  override def act(): Unit = ???
+  export robot.{position, direction}
+  private val random = Random()
+
+  override def act(): Unit =
+    if random.nextInt(100) > failureProbability
+    then robot.act()
+
+  override def turn(dir: Direction): Unit =
+    if random.nextInt(100) > failureProbability
+    then robot.turn(dir)
+
+  override def toString: String = s"${robot.toString} with chance to fail: ${failureProbability}%"
 
 class RobotRepeated(val robot: Robot, val numberOfRepetitions: Int = 2) extends Robot:
     export robot.{position, direction, turn}
@@ -93,4 +104,7 @@ class RobotRepeated(val robot: Robot, val numberOfRepetitions: Int = 2) extends 
   println(batteryRobot)
   batteryRobot.recharge()
   println(batteryRobot)
+
+  val failRobot = RobotCanFail(SimpleRobot((0,0), North), 50)
+  println(failRobot)
 
